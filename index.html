@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For My Favorite Person ❤️</title>
     <style>
+        :root {
+            --pink-bg: #ffeef2;
+            --main-pink: #d63384;
+            --heart-red: #ff4b2b;
+        }
+
         body {
             margin: 0;
             padding: 0;
@@ -12,21 +18,29 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #ffeef2;
+            background-color: var(--pink-bg);
             font-family: 'Arial', sans-serif;
             text-align: center;
             overflow-x: hidden;
             overflow-y: auto;
         }
 
-        /* Ornamen Melayang di Latar Belakang */
-        .ornament {
+        p {
+            color: var(--heart-red);
+        }
+
+        /* Foto-foto kecil yang tersebar di background */
+        .scattered-img {
             position: fixed;
+            width: 80px; /* Ukuran foto kecil yang menyebar */
+            height: 80px;
+            object-fit: cover;
+            border: 4px solid white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             z-index: 0;
-            opacity: 0.5;
-            font-size: 2rem;
-            animation: float 4s ease-in-out infinite;
-            user-select: none;
+            opacity: 0.6;
+            animation: float 6s ease-in-out infinite;
             pointer-events: none;
         }
 
@@ -44,7 +58,7 @@
         }
 
         #content {
-            padding: 40px 20px;
+            padding: 50px 20px;
             z-index: 10;
             width: 100%;
             max-width: 400px;
@@ -52,18 +66,39 @@
             position: relative;
         }
 
-        .gif-container img {
+        .image-stack {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 30px;
+            z-index: 5;
+            transition: all 0.5s ease;
+        }
+
+        .image-stack::before, .image-stack::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            z-index: -1;
+        }
+
+        .image-stack::before { background: #ffc1d1; top: 10px; left: 10px; transform: rotate(-5deg); }
+        .image-stack::after { background: #ffdce4; top: -5px; left: -5px; transform: rotate(3deg); border: 2px solid white; }
+
+        #mainGif {
             width: 180px;
-            margin-bottom: 20px;
-            border-radius: 15px;
-            animation: float 3s ease-in-out infinite;
-            box-shadow: 0 10px 20px rgba(214, 51, 132, 0.2);
+            background: white;
+            border: 8px solid white;
+            border-bottom: 35px solid white;
+            border-radius: 5px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
         h1 {
-            color: #d63384;
+            color: var(--main-pink);
             font-size: 1.5rem;
-            margin-bottom: 30px;
+            margin: 20px 0 30px;
             text-shadow: 2px 2px white;
         }
 
@@ -72,7 +107,7 @@
             flex-direction: column;
             align-items: center;
             gap: 15px;
-            min-height: 200px; /* Ruang agar tombol yes bisa membesar */
+            min-height: 150px;
         }
 
         button {
@@ -81,95 +116,53 @@
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        #yesBtn {
-            background-color: #ff4b2b;
-            color: white;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 15px rgba(255, 75, 43, 0.4);
             z-index: 100;
         }
 
-        #noBtn {
-            background-color: #6c757d;
-            color: white;
-            padding: 10px 20px;
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
+        #yesBtn { background-color: var(--heart-red); color: white; padding: 15px 40px; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(255, 75, 43, 0.4); }
+        #noBtn { background-color: #6c757d; color: white; padding: 10px 20px; font-size: 0.9rem; }
 
-        /* Pesan Rahasia */
-        .message {
-            display: none;
-            color: #ff4b2b;
-            animation: fadeIn 1s ease-in;
-        }
+        .message { display: none; animation: fadeIn 1s ease-in; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .message-box {
-            text-align: left;
-            background: white;
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            line-height: 1.6;
-            font-size: 1rem;
-        }
+        .photo-album { position: relative; height: 200px; margin: 40px 0; }
+        .small-frame { position: absolute; width: 110px; background: white; padding: 5px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s; }
+        .small-frame img { width: 100%; height: 100px; object-fit: cover; border-radius: 3px; }
+        .f1 { left: 5%; transform: rotate(-10deg); z-index: 3; }
+        .f2 { left: 50%; transform: translateX(-50%) rotate(5deg); z-index: 2; top: 10px; }
+        .f3 { right: 5%; transform: rotate(-8deg); z-index: 1; top: 5px; }
 
-        .bonus-link {
-            display: inline-block;
-            margin-top: 15px;
-            color: #ff4b2b;
-            text-decoration: none;
-            font-weight: bold;
-            border: 2px dashed #ff4b2b;
-            padding: 5px 15px;
-            border-radius: 10px;
-        }
+        .message-box { text-align: left; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); line-height: 1.6; color: #444; }
+        .bonus-link { display: block; margin-top: 15px; color: var(--heart-red); text-decoration: none; font-weight: bold; border: 2px dashed var(--heart-red); padding: 10px; border-radius: 12px; text-align: center; }
 
-        /* Elemen Hujan (Hearts/Stars) */
-        .heart-bg {
-            position: fixed;
-            top: -50px;
-            font-size: 20px;
-            animation: fall linear forwards;
-            z-index: 5;
-            pointer-events: none;
-            will-change: transform;
-        }
-
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); }
-        }
+        .heart-bg { position: fixed; top: -50px; animation: fall linear forwards; z-index: 5; pointer-events: none; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
     </style>
 </head>
 <body>
 
+    <img src="img1.jpg" class="scattered-img" style="top: 10%; left: 5%; animation-delay: 0s;">
+    <img src="img2.jpg" class="scattered-img" style="top: 60%; left: 8%; animation-delay: 1s;">
+    <img src="img3.jpg" class="scattered-img" style="top: 15%; right: 7%; animation-delay: 2s;">
+    <img src="img.jpg" class="scattered-img" style="top: 70%; right: 5%; animation-delay: 1.5s;">
+
     <div class="corner-decor" style="top: 10px; left: 10px;">✨</div>
     <div class="corner-decor" style="top: 10px; right: 10px;">💖</div>
-    <div class="corner-decor" style="bottom: 10px; left: 10px;">🎀</div>
-    <div class="corner-decor" style="bottom: 10px; right: 10px;">🌟</div>
     
-    <div class="ornament" style="top: 20%; left: 5%;">☁️</div>
-    <div class="ornament" style="top: 15%; right: 10%; animation-delay: 1s;">🌸</div>
-    <div class="ornament" style="bottom: 20%; left: 15%; animation-delay: 2s;">🧸</div>
-
     <audio id="bgMusic">
         <source src="music.mp3x" type="audio/mpeg">
     </audio>
 
     <div id="content">
-        <div class="gif-container">
+        <div class="image-stack" id="imgWrapper">
             <img id="mainGif" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExamRjanIzODFxZzd4bWE5YW42YmZldGlxNGNpeHE3YW0yMHZ2bXl5NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7vDoUoDZHoUQxMPkd7/giphy.gif" alt="cute cat">
         </div>
         
-        <h1 id="question">Hadiah Valentine for Glee, mauu? (plisss)🥺</h1>
+        <h1 id="question">Hadiah Valentine for Glee, mauu? 💌</h1>
 
         <div class="btn-group" id="btnGroup">
             <button id="yesBtn">MAUUUU!</button>
@@ -177,17 +170,23 @@
         </div>
 
         <div id="secretMessage" class="message">
-            <h2 style="font-size: 2.2rem; margin-bottom: 10px;">YAAAAAY!!!!!! ❤️</h2>
+            <h2 style="color: var(--heart-red); font-size: 2rem; margin-bottom: 15px;">YAAAAAY!!!!!! ❤️</h2>
+            
+            <div class="photo-album">
+                <div class="small-frame f1"><img src="img1.jpg" alt="1"></div>
+                <div class="small-frame f2"><img src="img2.jpg" alt="2"></div>
+                <div class="small-frame f3"><img src="img3.jpg" alt="3"></div>
+            </div>
+
             <div class="message-box">
                 <p><b>Meskipun ada jarak...</b></p>
-                <p>Jarak itu ibarat <i>loading</i> pas lagi main game: kadang bikin bosan , tapi rela nunggu demi bisa main (ketemu) sama Glee.</p>
+                <p>Jarak itu ibarat <i>loading</i> pas lagi main game: bikin bosan & kadang bikin ovt, tapi rela nunggu demi bisa main(ketemu) sama glee.</p>
                 <p>Can't wait for the day when we don't have to chit-chat to a screen. ✨</p>
-                <p>Sorry yahh belum bisa kasi Cokelat n Bunga secara langsung...</p>
-                <p><i>(Semoga tahun depan udah bisa!)</i></p>
+                <p>Sorry yahh belum bisa kasi Cokelat🍫 n Bunga💐 langsung...🥹</p>
                 
-                <a href="https://drive.google.com/file/d/1razvUPDgHp44POQG-pS0ER6ORv1XlXs4/view?usp=drivesdk" class="bonus-link" target="_blank">🎁 Klik ini ada Bonus!</a>
+                <a href="https://drive.google.com/file/d/1razvUPDgHp44POQG-pS0ER6ORv1XlXs4/view?usp=drivesdk" class="bonus-link" target="_blank">🎁 Klik ini ada Bonus🙈!</a>
                 <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
-                <p style="font-size: 0.8rem; color: #888; text-align: center;">for MG</p>
+                <p style="font-size: 0.8rem; color: #999; text-align: center;">hope i can be your new signal! 📶❤️</p>
             </div>
         </div>
     </div>
@@ -200,81 +199,71 @@
         const secretMessage = document.getElementById('secretMessage');
         const mainGif = document.getElementById('mainGif');
         const music = document.getElementById('bgMusic');
+        const imgWrapper = document.getElementById('imgWrapper');
 
         let yesSize = 1;
         let noSize = 1;
-        const noTexts = [
-            "Yakin?", 
-            "serius kohh?", 
-            "coba pikir2 lagi", 
-            "Plisss gleee??? 🥺", 
-            "begitunya mko"
-        ];
+        const noTexts = ["Yakin?", "serius kohh?", "coba pikir2 lagi", "Plisss gleee??? 🥺", "begitunya mko"];
         let textIndex = 0;
 
-        // Logika Klik Tombol No
         noBtn.addEventListener('click', () => {
-            music.play(); // Putar musik saat mulai interaksi
-
-            // Tombol YES membesar
+            music.play();
             yesSize += 0.4;
             yesBtn.style.transform = `scale(${yesSize})`;
-            
-            // Tombol NO mengecil
             noSize -= 0.1;
             noBtn.style.transform = `scale(${noSize})`;
-            
-            // Ganti teks tombol No
             noBtn.innerText = noTexts[textIndex];
             textIndex = (textIndex + 1) % noTexts.length;
-
-            if(noSize <= 0.4) {
-                noBtn.style.display = 'none';
-            }
+            if(noSize <= 0.4) noBtn.style.display = 'none';
         });
 
-        // Logika Klik Tombol Yes
         yesBtn.addEventListener('click', () => {
             music.play();
             music.loop = true;
-            
-            // Sembunyikan elemen lama
             question.style.display = 'none';
             btnGroup.style.display = 'none';
-            
-            // Tampilkan pesan
             secretMessage.style.display = 'block';
             
-            // Ganti gambar/GIF
             mainGif.src = "img.jpg";
             mainGif.style.width = "250px";
-            mainGif.style.border = "5px solid white";
-            mainGif.style.boxShadow = "0 10px 20px rgba(0,0,0,0.1)";
+            imgWrapper.style.transform = "rotate(0deg) scale(1.1)";
             
-            // Buat hujan ornamen sangat ramai
-            setInterval(createHeart, 150);
+            // Saat diklik Yes, sebarkan lebih banyak foto kecil lagi secara otomatis
+            for(let i=0; i<6; i++) {
+                setTimeout(createFloatingImg, i * 300);
+            }
+
+            setInterval(createHeart, 100);
         });
 
-        function createHeart() {
-            const emojis = ['🌸', '❤️', '💖', '✨', '🍭', '🍓', '🧸', '🌈'];
-            const heart = document.createElement('div');
-            heart.classList.add('heart-bg');
+        function createFloatingImg() {
+            const imgList = ['img1.jpg', 'img2.jpg', 'img3.jpg', 'img.jpg'];
+            const fImg = document.createElement('img');
+            fImg.src = imgList[Math.floor(Math.random() * imgList.length)];
+            fImg.classList.add('scattered-img');
+            fImg.style.opacity = "0";
+            fImg.style.top = Math.random() * 80 + "vh";
+            fImg.style.left = Math.random() * 80 + "vw";
+            fImg.style.width = "60px";
+            fImg.style.height = "60px";
+            document.body.appendChild(fImg);
             
-            heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
-            
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = Math.random() * 2 + 3 + 's'; 
-            heart.style.fontSize = Math.random() * 15 + 20 + 'px';
-            
-            document.body.appendChild(heart);
-            
-            // Hapus elemen setelah jatuh agar web tidak berat
-            setTimeout(() => {
-                heart.remove();
-            }, 5000);
+            // Animasi muncul pelan
+            setTimeout(() => { fImg.style.opacity = "0.5"; fImg.style.transition = "1s"; }, 100);
         }
 
-        // Memastikan musik tetap loop jika terhenti
+        function createHeart() {
+            const emojis = ['🌸', '❤️', '💖', '✨', '🍭', '🧸', '💌'];
+            const heart = document.createElement('div');
+            heart.classList.add('heart-bg');
+            heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 2 + 2 + 's'; 
+            heart.style.fontSize = Math.random() * 15 + 20 + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 4000);
+        }
+
         music.addEventListener('ended', function() {
             this.currentTime = 0;
             this.play();
